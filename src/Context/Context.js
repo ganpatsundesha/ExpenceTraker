@@ -11,18 +11,18 @@ export const EntryProvider = (props) => {
     const [entry, setEntry] = useState([])
     const [category, setCategory] = useState('')
     const [open, setOpen] = useState(false)
-    const [isedit, setIsEdit] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
     const [editId, setEditId] = useState(null)
     const [calculation, setCalculation] = useState({
-        income: 0,
-        expance: 0,
-        total: 0,
+        Income: 0,
+        Expense: 0,
+        Total: 0,
     })
 
     return (
         <EntryContext.Provider value={{
             entry, setEntry, setCategory, category, calculation,
-            setCalculation, setOpen, open, isedit, setIsEdit, editId, setEditId
+            setCalculation, setOpen, open, isEdit, setIsEdit, editId, setEditId
         }}>
             {
                 props.children

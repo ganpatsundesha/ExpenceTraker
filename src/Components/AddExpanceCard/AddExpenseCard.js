@@ -1,12 +1,12 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { AddCard } from "./AddExpanceCard.style";
+import { AddCard } from "./AddExpenseCard.style";
 import { useEntryData } from "../../Context/Context";
-import { ExpanceType, IncomeType, TypeOfEntry } from "../../Constant/Constant";
+import { ExpenseType, IncomeType, TypeOfEntry } from "../../Constant/Constant";
 import Cookies from "js-cookie";
 
-export const AddExpanceCard = ({ register, handleSubmit, errors, reset, setValue }) => {
+export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
     const data = useEntryData();
 
     const submit = (curEntry) => {
@@ -15,9 +15,14 @@ export const AddExpanceCard = ({ register, handleSubmit, errors, reset, setValue
                 if (curItem.id === data.editId) {
                     data.setEditId(null)
                     data.setIsEdit(false)
-                    return {
-                        ...curItem, Title: curEntry.Title, Money: curEntry.Money, Catogary: curEntry.Catogary, CatogaryType: curEntry.CatogaryType
-                    }
+                    reset({
+                        Title: '',
+                        Money: '',
+                        Category: [],
+                        CatogaryType: [],
+                    })
+                    // data.setOpen(false);
+                    return { ...curItem, Title: curEntry.Title, Money: curEntry.Money, Category: curEntry.Category, CatogaryType: curEntry.CatogaryType }
                 }
                 else {
                     return curItem
@@ -30,34 +35,35 @@ export const AddExpanceCard = ({ register, handleSubmit, errors, reset, setValue
             reset({
                 Title: '',
                 Money: '',
-                Catogary: [],
+                Category: [],
                 CatogaryType: [],
             })
+            // data.setOpen(false);
         }
     };
 
     useEffect(() => {
         const curIncome = data.entry.reduce((sum, item) => {
-            if (item.Catogary === "Income") {
+            if (item.Category === "Income") {
                 return sum + parseInt(item.Money);
             }
             return sum;
         }, 0);
 
-        const curExpance = data.entry.reduce((sum, item) => {
-            if (item.Catogary === "Expense") {
+        const curExpense = data.entry.reduce((sum, item) => {
+            if (item.Category === "Expense") {
                 return sum + parseInt(item.Money);
             }
             return sum;
         }, 0);
 
         data.setCalculation({
-            income: curIncome,
-            expance: curExpance,
-            total: curIncome - curExpance,
+            Income: curIncome,
+            Expense: curExpense,
+            Total: curIncome - curExpense,
         });
 
-    }, [data.entry, data.editId, data.isedit]);
+    }, [data.entry, data.editId, data.isEdit]);
 
     useEffect(() => {
         if (data.editId) {
@@ -68,12 +74,12 @@ export const AddExpanceCard = ({ register, handleSubmit, errors, reset, setValue
                 reset({
                     Title: editItem[0].Title,
                     Money: editItem[0].Money,
-                    Catogary: editItem[0].Catogary,
+                    Category: editItem[0].Category,
                     CatogaryType: editItem[0].CatogaryType,
                 })
             }
         }
-    }, [data.editId, data.isedit])
+    }, [data.editId, data.isEdit])
 
     return (
         <AddCard>
@@ -88,21 +94,12 @@ export const AddExpanceCard = ({ register, handleSubmit, errors, reset, setValue
                     <Typography sx={{ color: "red", mt: "0 !important" }}>{errors.Money?.message}</Typography>
                     <FormControl fullWidth>
                         <InputLabel sx={{ background: "#fff", padding: "0 7px 0 0" }} id="demo-simple-select-label">
-                            Income/Expance
+                            Income/Expense
                         </InputLabel>
                         <Select
                             defaultValue=""
-                            label="Catogary"
-                            {...register(
-                                "Catogary",
-                                { required: "Category Is Required*" },
-                                {
-                                    onChange: (e) => {
-                                        data.setCategory(e.target.value);
-                                    },
-                                },
-                            )}
-                        >
+                            label="Category"
+                            {...register("Category", { required: 'Category Is Required*', onChange: (e) => { data.setCategory(e.target.value) } })}>
                             {TypeOfEntry.length > 0 &&
                                 TypeOfEntry.map((item, index) => {
                                     return (
@@ -113,15 +110,15 @@ export const AddExpanceCard = ({ register, handleSubmit, errors, reset, setValue
                                 })}
                         </Select>
                     </FormControl>
-                    <Typography sx={{ color: "red", mt: "0 !important" }}>{errors.Catogary?.message}</Typography>
+                    <Typography sx={{ color: "red", mt: "0 !important" }}>{errors.Category?.message}</Typography>
                     <FormControl fullWidth>
                         <InputLabel sx={{ background: "#fff", padding: "0 7px 0 0" }} id="demo-simple-select-label">Choose Type</InputLabel>
                         <Select defaultValue="" label="CatogaryType"
                             {...register("CatogaryType", { required: "Category Type Is Required*" })}>
-                            {data.category === 'Expense' ? ExpanceType.map((item, index) => {
+                            {data.category === 'Income' ? IncomeType.map((item, index) => {
                                 return (<MenuItem key={index} value={item}>{item}</MenuItem>)
                             }) :
-                                IncomeType.map((item, index) => {
+                                ExpenseType.map((item, index) => {
                                     return (
                                         <MenuItem key={index} value={item}>
                                             {item}
