@@ -21,42 +21,33 @@ const style = {
 
 export const TotalExpenseCard = () => {
     const data = useEntryData();
-    const handleOpen = () => data.setOpen(true);
-    const handleClose = () => data.setOpen(false);
-
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
         defaultValues: {
             Title: "",
-            Catogary: "",
+            Money: "",
+            Catogary: [],
+            CatogaryType: [],
         },
     });
 
+    const handleOpen = () => data.setOpen(true);
+    const handleClose = () => {
+        data.setOpen(false);
+        data.setEditId(null);
+        data.setIsEdit(false);
+        reset({
+            Title: '',
+            Money: '',
+            Catogary: [],
+            CatogaryType: [],
+        })
+    }
+
     const handleEdit = (newItem) => () => {
-        // setValue({
-        // Title: newItem.Title,
-        //     Money: newItem.Money,
-        //         Catogary: newItem.Catogary,
-        //             CatogaryType: newItem.CatogaryType,
-        // })
-
-        data.entry.map((ele) => (
-
-            setValue(
-                ele.Title = newItem[0].Title,
-                ele.Money = newItem[0].Money,
-                ele.Catogary = newItem[0].Catogary,
-                ele.CatogaryType = newItem[0].CatogaryType,
-            )
-        ))
-
         data.setOpen(true);
         data.setIsEdit(true);
-        data.setEditId(newItem[0].id);
-        // console.log(newItem);
-
+        data.setEditId(newItem);
     };
-
-    console.log(data.entry);
 
     return (
         <ExpenseCard component="section">
@@ -84,25 +75,23 @@ export const TotalExpenseCard = () => {
                         {data.entry.length > 0 &&
                             data.entry.map((item, index) => {
                                 return (
-                                    <Tooltip title="Click To Edit" key={index}>
-                                        <Grid onClick={handleEdit(data.entry)} container sx={{ cursor: "pointer", border: "2px solid #fff", p: 2, color: theme.palette.white.main, fontSize: "16px", fontWeight: 600, borderRadius: 2, background: item.Catogary === "Income" ? "green" : "red" }}>
-                                            <Grid item xs={6}>
-                                                {item.CatogaryType}{" "}
-                                                <Typography variant="body2" sx={{ display: "inline-block" }}>
-                                                    ({item.Title})
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} sx={{ textAlign: "end" }}>
-                                                ₹ {item.Money}
-                                            </Grid>
+                                    <Grid key={index} onClick={handleEdit(item.id)} container sx={{ cursor: "pointer", border: "2px solid #fff", p: 2, color: theme.palette.white.main, fontSize: "16px", fontWeight: 600, borderRadius: 2, background: item.Catogary === "Income" ? "green" : "red" }}>
+                                        <Grid item xs={6}>
+                                            {item.CatogaryType}{" "}
+                                            <Typography variant="body2" sx={{ display: "inline-block" }}>
+                                                ({item.Title})
+                                            </Typography>
                                         </Grid>
-                                    </Tooltip>
+                                        <Grid item xs={6} sx={{ textAlign: "end" }}>
+                                            ₹ {item.Money}
+                                        </Grid>
+                                    </Grid>
                                 );
                             })}
                     </Stack>
                     <Modal open={data.open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                         <Box sx={style}>
-                            <AddExpanceCard register={register} handleSubmit={handleSubmit} errors={errors} reset={reset} />
+                            <AddExpanceCard register={register} handleSubmit={handleSubmit} errors={errors} reset={reset} setValue={setValue} handleEdit={handleEdit} />
                         </Box>
                     </Modal>
                 </Box>
