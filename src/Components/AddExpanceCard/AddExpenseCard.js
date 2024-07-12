@@ -1,10 +1,9 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { AddCard } from "./AddExpenseCard.style";
 import { useEntryData } from "../../Context/Context";
 import { ExpenseType, IncomeType, TypeOfEntry } from "../../Constant/Constant";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
     const data = useEntryData();

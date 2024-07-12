@@ -1,10 +1,11 @@
-import React from "react";
-import { Box, Button, Container, Grid, Modal, Stack, Typography, Tooltip } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Button, Container, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
 import { ExpenseCard } from "./TotalExpenseCard.style";
 import theme from "../../Theme/Theme";
 import { useEntryData } from "../../Context/Context";
 import { useForm } from "react-hook-form";
 import { AddExpenseCard } from "../AddExpanceCard/AddExpenseCard";
+import { ExpenseType, IncomeType } from "../../Constant/Constant";
 
 const style = {
     position: "absolute",
@@ -20,6 +21,7 @@ const style = {
 };
 
 export const TotalExpenseCard = () => {
+    const [search, setSearch] = useState('')
     const data = useEntryData();
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
         defaultValues: {
@@ -49,6 +51,10 @@ export const TotalExpenseCard = () => {
         data.setEditId(newItem);
     };
 
+    const handleChange = (event) => {
+        setSearch(event)
+    }
+
     return (
         <ExpenseCard component="section">
             <Container>
@@ -68,9 +74,17 @@ export const TotalExpenseCard = () => {
                     <Box sx={{ textAlign: "center" }}>
                         <Button onClick={handleOpen}>Add Income/Expense</Button>
                     </Box>
-                    <Typography variant="body1" sx={{ color: theme.palette.white.main, my: 2, fontSize: "20px", fontWeight: 600 }}>
-                        {data.entry.length > 0 ? "Transactions" : "Pls Add Your Transactions"}
-                    </Typography>
+                    <Stack direction="row" sx={{ my: 2, justifyContent: "space-between", alignItems: "center" }}>
+                        <Typography variant="body1" sx={{ color: theme.palette.white.main, my: 2, fontSize: "20px", fontWeight: 600 }}>
+                            {data.entry.length > 0 ? "Transactions" : "Pls Add Your Transactions"}
+                        </Typography>
+                        {
+                            data.entry.length > 0 &&
+                            <form>
+                                <TextField onChange={(e) => handleChange(e.target.value)} sx={{ color: '#fff', borderColor: '#fff' }} label="Search" />
+                            </form>
+                        }
+                    </Stack>
                     <Stack spacing={3}>
                         {data.entry.length > 0 &&
                             data.entry.map((item, index) => {
