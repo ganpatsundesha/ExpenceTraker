@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Container, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
 import { ExpenseCard } from "./TotalExpenseCard.style";
 import theme from "../../Theme/Theme";
 import { useEntryData } from "../../Context/Context";
 import { useForm } from "react-hook-form";
 import { AddExpenseCard } from "../AddExpanceCard/AddExpenseCard";
-import { ExpenseType, IncomeType } from "../../Constant/Constant";
+import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
 
 const style = {
     position: "absolute",
@@ -55,6 +55,15 @@ export const TotalExpenseCard = () => {
         setSearch(event)
     }
 
+    const result = data.entry.filter((item) => {
+        let { Title } = item
+        if (Title.includes(search)) {
+            return item
+        }
+    })
+
+    console.log(result);
+
     return (
         <ExpenseCard component="section">
             <Container>
@@ -86,22 +95,14 @@ export const TotalExpenseCard = () => {
                         }
                     </Stack>
                     <Stack spacing={3}>
-                        {data.entry.length > 0 &&
-                            data.entry.map((item, index) => {
-                                return (
-                                    <Grid key={index} onClick={handleEdit(item.id)} container sx={{ cursor: "pointer", border: "2px solid #fff", p: 2, color: theme.palette.white.main, fontSize: "16px", fontWeight: 600, borderRadius: 2, background: item.Category === "Income" ? "green" : "red" }}>
-                                        <Grid item xs={6}>
-                                            {item.CatogaryType}{" "}
-                                            <Typography variant="body2" sx={{ display: "inline-block" }}>
-                                                ({item.Title})
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={6} sx={{ textAlign: "end" }}>
-                                            ₹ {item.Money}
-                                        </Grid>
-                                    </Grid>
-                                );
-                            })}
+                        {data.entry.length > 0 && data.entry.map((item, index) => {
+                            return (
+                                <Grid key={index} onClick={handleEdit(item.id)} container sx={{ cursor: "pointer", border: "2px solid #fff", p: 2, color: theme.palette.white.main, fontSize: "16px", fontWeight: 600, borderRadius: 2, background: item.Category === "Income" ? "green" : "red" }}>
+                                    <Grid item xs={6}>{item.CatogaryType}{" "}<Typography variant="body2" sx={{ display: "inline-block" }}>({item.Title})</Typography></Grid>
+                                    <Grid item xs={6} sx={{ textAlign: "end" }}>₹ {item.Money}</Grid>
+                                </Grid>
+                            );
+                        })}
                     </Stack>
                     <Modal open={data.open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                         <Box sx={style}>

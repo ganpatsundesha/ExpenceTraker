@@ -67,4 +67,7 @@ export const ExpenseCard = styled(Box)(({ theme }) => ({
     '& .css-55wkek-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
         borderColor: theme.palette.white.main
     },
+    '& .css-13izd6v-MuiFormLabel-root-MuiInputLabel-root.Mui-focused': {
+        color: theme.palette.white.main
+    }
 }))
