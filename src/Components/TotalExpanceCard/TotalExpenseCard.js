@@ -72,7 +72,10 @@ export const TotalExpenseCard = () => {
         console.log(data);
     }
 
-    const oldEntery = useMemo(() => JSON.parse(Cookies.get('data')), [])
+    const oldEntery = useMemo(() => {
+        const data = Cookies.get('data')
+        return data ? (JSON.parse(data) || []) : []
+    }, [])
 
     useEffect(() => {
         const searedData = data.entry.filter((elem) => {
