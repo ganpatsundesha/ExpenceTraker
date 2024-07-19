@@ -66,7 +66,8 @@ export const TotalExpenseCard = () => {
         setSearch(event);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = (id) => (event) => {
+        event.stopPropagation()
         const newData = data.entry.filter((item) => item.id !== id)
         data.setEntry(newData)
         console.log(data);
@@ -146,7 +147,7 @@ export const TotalExpenseCard = () => {
                                         <Grid item xs={6} sx={{ textAlign: "end" }}>
                                             ₹ {item.Money}
                                         </Grid>
-                                        <Delete onClick={() => handleDelete(item.id)} />
+                                        <Delete onClick={handleDelete(item.id)} />
                                     </Grid>
                                 );
                             })}
