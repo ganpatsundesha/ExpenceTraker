@@ -1,5 +1,6 @@
 import { Box, styled } from "@mui/material";
 import theme from "../../Theme/Theme";
+import { Block } from "@mui/icons-material";
 
 export const ExpenseCard = styled(Box)(({ theme }) => ({
     minHeight: '100vh',
@@ -69,5 +70,18 @@ export const ExpenseCard = styled(Box)(({ theme }) => ({
     },
     '& .css-13izd6v-MuiFormLabel-root-MuiInputLabel-root.Mui-focused': {
         color: theme.palette.white.main
+    },
+    '& svg': {
+        position: 'absolute',
+        background: '#000',
+        padding: '3px',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        display: 'none',
+    },
+    '& .exCard:hover svg': {
+        display: 'block',
     }
+
 }))

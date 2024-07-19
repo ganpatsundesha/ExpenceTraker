@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Container, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
+import { Box, Button, Chip, Container, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
 import { ExpenseCard } from "./TotalExpenseCard.style";
 import theme from "../../Theme/Theme";
 import { useEntryData } from "../../Context/Context";
 import { useForm } from "react-hook-form";
 import { AddExpenseCard } from "../AddExpanceCard/AddExpenseCard";
-import useEnhancedEffect from "@mui/material/utils/useEnhancedEffect";
+import Cookies from "js-cookie";
+import { Delete } from "@mui/icons-material";
 
 const style = {
     position: "absolute",
@@ -18,12 +19,22 @@ const style = {
     bgcolor: "#fff",
     boxShadow: 24,
     p: 4,
+
+    xs: {
+        minWidth: '320px',
+    }
 };
 
 export const TotalExpenseCard = () => {
-    const [search, setSearch] = useState('')
+    const [search, setSearch] = useState("");
     const data = useEntryData();
-    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        setValue,
+    } = useForm({
         defaultValues: {
             Title: "",
             Money: "",
@@ -38,12 +49,12 @@ export const TotalExpenseCard = () => {
         data.setEditId(null);
         data.setIsEdit(false);
         reset({
-            Title: '',
-            Money: '',
+            Title: "",
+            Money: "",
             Category: [],
             CatogaryType: [],
-        })
-    }
+        });
+    };
 
     const handleEdit = (newItem) => () => {
         data.setOpen(true);
@@ -52,17 +63,34 @@ export const TotalExpenseCard = () => {
     };
 
     const handleChange = (event) => {
-        setSearch(event)
+        setSearch(event);
+    };
+
+    const handleDelete = (id) => {
+        const newData = data.entry.filter((item) => item.id !== id)
+        data.setEntry(newData)
+        console.log(data);
     }
 
-    const result = data.entry.filter((item) => {
-        let { Title } = item
-        if (Title.includes(search)) {
-            return item
-        }
-    })
+    const oldEntery = useMemo(() => JSON.parse(Cookies.get('data')), [])
 
-    console.log(result);
+    useEffect(() => {
+        const searedData = data.entry.filter((elem) => {
+            if (elem.Title.includes(search)) {
+                return elem
+            }
+        })
+
+        if (search === "") {
+            data.setEntry(oldEntery)
+        }
+        if (searedData.length > 0) {
+            data.setEntry(searedData)
+        }
+        if (searedData.length === 0 && search.length > 0) {
+            data.setEntry([])
+        }
+    }, [search])
 
     return (
         <ExpenseCard component="section">
@@ -87,22 +115,38 @@ export const TotalExpenseCard = () => {
                         <Typography variant="body1" sx={{ color: theme.palette.white.main, my: 2, fontSize: "20px", fontWeight: 600 }}>
                             {data.entry.length > 0 ? "Transactions" : "Pls Add Your Transactions"}
                         </Typography>
-                        {
-                            data.entry.length > 0 &&
+                        {oldEntery.length > 0 && (
                             <form>
-                                <TextField onChange={(e) => handleChange(e.target.value)} sx={{ color: '#fff', borderColor: '#fff' }} label="Search" />
+                                <TextField onChange={(e) => handleChange(e.target.value)} sx={{ color: "#fff", borderColor: "#fff" }} label="Search" />
                             </form>
-                        }
+                        )}
                     </Stack>
+                    {
+                        data.entry.length <= 0 && search.length > 0 ? <><Typography variant="h3">Result Not Found!</Typography></> : <></>
+                    }
                     <Stack spacing={3}>
-                        {data.entry.length > 0 && data.entry.map((item, index) => {
-                            return (
-                                <Grid key={index} onClick={handleEdit(item.id)} container sx={{ cursor: "pointer", border: "2px solid #fff", p: 2, color: theme.palette.white.main, fontSize: "16px", fontWeight: 600, borderRadius: 2, background: item.Category === "Income" ? "green" : "red" }}>
-                                    <Grid item xs={6}>{item.CatogaryType}{" "}<Typography variant="body2" sx={{ display: "inline-block" }}>({item.Title})</Typography></Grid>
-                                    <Grid item xs={6} sx={{ textAlign: "end" }}>₹ {item.Money}</Grid>
-                                </Grid>
-                            );
-                        })}
+                        {data.entry.length > 0 &&
+                            data.entry.map((item, index) => {
+                                return (
+                                    <Grid className="exCard" key={index} onClick={handleEdit(item.id)} container
+                                        sx={{
+                                            cursor: "pointer", position: "relative", border: "2px solid #fff", p: 2, color: theme.palette.white.main,
+                                            fontSize: "16px", fontWeight: 600, borderRadius: 2,
+                                            background: item.Category === "Income" ? "green" : "red",
+                                        }}>
+                                        <Grid item xs={6}>
+                                            {item.CatogaryType}{" "}
+                                            <Typography variant="body2" sx={{ display: "inline-block" }}>
+                                                ({item.Title})
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={6} sx={{ textAlign: "end" }}>
+                                            ₹ {item.Money}
+                                        </Grid>
+                                        <Delete onClick={() => handleDelete(item.id)} />
+                                    </Grid>
+                                );
+                            })}
                     </Stack>
                     <Modal open={data.open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                         <Box sx={style}>

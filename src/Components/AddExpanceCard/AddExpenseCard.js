@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { AddCard } from "./AddExpenseCard.style";
 import { useEntryData } from "../../Context/Context";
 import { ExpenseType, IncomeType, TypeOfEntry } from "../../Constant/Constant";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
     const data = useEntryData();
@@ -37,9 +37,13 @@ export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
                 Category: [],
                 CatogaryType: [],
             })
-            // data.setOpen(false);
         }
     };
+
+    useEffect(() => {
+        Cookies.set("data", JSON.stringify(data.entry))
+    }, [data.entry])
+
 
     useEffect(() => {
         const curIncome = data.entry.reduce((sum, item) => {
@@ -71,10 +75,10 @@ export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
             })
             if (editItem) {
                 reset({
-                    Title: editItem[0].Title,
-                    Money: editItem[0].Money,
-                    Category: editItem[0].Category,
-                    CatogaryType: editItem[0].CatogaryType,
+                    Title: editItem[0]?.Title,
+                    Money: editItem[0]?.Money,
+                    Category: editItem[0]?.Category,
+                    CatogaryType: editItem[0]?.CatogaryType,
                 })
             }
         }
