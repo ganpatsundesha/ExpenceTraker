@@ -18,6 +18,7 @@ export const ExpenseCard = styled(Box)(({ theme }) => ({
         backgroundSize: 'cover',
         opacity: 0.2,
         zIndex: 1,
+        backgroundPosition: 'center center',
     },
 
     '&:before': {
@@ -36,11 +37,21 @@ export const ExpenseCard = styled(Box)(({ theme }) => ({
         padding: '40px 60px',
         zIndex: 9,
         minHeight: '100vh',
+        [theme.breakpoints.down('mxs')]: {
+            padding: '20px 16px',
+        }
     },
 
     '& h1': {
         textAlign: 'center',
         color: theme.palette.white.main,
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '40px',
+            marginBottom: '30px',
+        },
+        [theme.breakpoints.down('mxs')]: {
+            fontSize: '35px',
+        },
     },
 
     '& h3': {
@@ -73,15 +84,21 @@ export const ExpenseCard = styled(Box)(({ theme }) => ({
     },
     '& svg': {
         position: 'absolute',
-        background: '#000',
-        padding: '3px',
+        // background: '#000',
+        // padding: '3px',
         left: '50%',
         top: '50%',
         transform: 'translate(-50%, -50%)',
         display: 'none',
+        [theme.breakpoints.down('md')]: {
+            display: 'block'
+        },
+        [theme.breakpoints.down('mxs')]: {
+            position: 'unset',
+            transform: 'none'
+        },
     },
     '& .exCard:hover svg': {
         display: 'block',
     }
-
 }))

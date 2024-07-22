@@ -52,7 +52,17 @@ const theme = createTheme({
                 }
             }
         }
-    }
+    },
+    breakpoints: {
+        values: {
+            xs: 0,
+            mxs: 600,
+            sm: 767,
+            md: 900,
+            lg: 1200,
+            xl: 1536,
+        },
+    },
 });
 
 export default theme

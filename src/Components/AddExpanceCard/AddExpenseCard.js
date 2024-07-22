@@ -46,29 +46,6 @@ export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
 
 
     useEffect(() => {
-        const curIncome = data.entry.reduce((sum, item) => {
-            if (item.Category === "Income") {
-                return sum + parseInt(item.Money);
-            }
-            return sum;
-        }, 0);
-
-        const curExpense = data.entry.reduce((sum, item) => {
-            if (item.Category === "Expense") {
-                return sum + parseInt(item.Money);
-            }
-            return sum;
-        }, 0);
-
-        data.setCalculation({
-            Income: curIncome,
-            Expense: curExpense,
-            Total: curIncome - curExpense,
-        });
-
-    }, [data.entry, data.editId, data.isEdit]);
-
-    useEffect(() => {
         if (data.editId) {
             const editItem = data.entry.filter((curItem) => {
                 return curItem.id === data.editId
