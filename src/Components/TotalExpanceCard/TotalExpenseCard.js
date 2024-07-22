@@ -211,7 +211,7 @@ export const TotalExpenseCard = () => {
                     </Stack>
                     <Modal open={data.open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                         <Box sx={style}>
-                            <AddExpenseCard register={register} handleSubmit={handleSubmit} errors={errors} reset={reset} setValue={setValue} handleEdit={handleEdit} />
+                            <AddExpenseCard register={register} handleSubmit={handleSubmit} errors={errors} reset={reset} setValue={setValue} handleEdit={handleEdit} handleClose={handleClose} />
                         </Box>
                     </Modal>
                 </Box>

@@ -5,7 +5,7 @@ import { useEntryData } from "../../Context/Context";
 import { ExpenseType, IncomeType, TypeOfEntry } from "../../Constant/Constant";
 import Cookies from "js-cookie";
 
-export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
+export const AddExpenseCard = ({ register, handleSubmit, errors, reset, handleClose }) => {
     const data = useEntryData();
 
     const submit = (curEntry) => {
@@ -20,7 +20,7 @@ export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
                         Category: [],
                         CatogaryType: [],
                     })
-                    // data.setOpen(false);
+                    handleClose();
                     return { ...curItem, Title: curEntry.Title, Money: curEntry.Money, Category: curEntry.Category, CatogaryType: curEntry.CatogaryType }
                 }
                 else {
@@ -37,6 +37,7 @@ export const AddExpenseCard = ({ register, handleSubmit, errors, reset }) => {
                 Category: [],
                 CatogaryType: [],
             })
+            handleClose();
         }
     };
 
